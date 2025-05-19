@@ -189,6 +189,11 @@ for (let i = 0; i < 10; i++) {
     );
 }
 
+// Update score display
+function updateScore() {
+    document.getElementById('score').textContent = score;
+}
+
 // Projectiles
 const projectiles = [];
 function createProjectile() {
@@ -258,11 +263,80 @@ window.addEventListener('keyup', (e) => {
     }
 });
 
+// Explosion particles
+function createExplosion(position) {
+    const particleCount = 20;
+    const particles = [];
+    
+    for (let i = 0; i < particleCount; i++) {
+        const geometry = new THREE.SphereGeometry(0.2);
+        const material = new THREE.MeshPhongMaterial({
+            color: 0xff5500,
+            emissive: 0xff5500,
+            emissiveIntensity: 0.5,
+            transparent: true,
+            opacity: 1
+        });
+        
+        const particle = new THREE.Mesh(geometry, material);
+        particle.position.copy(position);
+        
+        // Random velocity for each particle
+        particle.userData.velocity = new THREE.Vector3(
+            (Math.random() - 0.5) * 0.3,
+            Math.random() * 0.2,
+            (Math.random() - 0.5) * 0.3
+        );
+        
+        particle.userData.life = 1.0; // Life counter for fade out
+        particles.push(particle);
+        scene.add(particle);
+    }
+    
+    return particles;
+}
+
+// Store all active explosion particles
+const explosions = [];
+
+// Update explosions in animation loop
+function updateExplosions() {
+    for (let i = explosions.length - 1; i >= 0; i--) {
+        const particles = explosions[i];
+        let allDead = true;
+        
+        for (let j = particles.length - 1; j >= 0; j--) {
+            const particle = particles[j];
+            
+            // Update position
+            particle.position.add(particle.userData.velocity);
+            
+            // Update life and opacity
+            particle.userData.life -= 0.02;
+            particle.material.opacity = particle.userData.life;
+            
+            if (particle.userData.life <= 0) {
+                scene.remove(particle);
+                particles.splice(j, 1);
+            } else {
+                allDead = false;
+            }
+        }
+        
+        if (allDead) {
+            explosions.splice(i, 1);
+        }
+    }
+}
+
 // Game loop
 function animate() {
     if (isGameOver) return;
     
     requestAnimationFrame(animate);
+    
+    // Update explosions
+    updateExplosions();
     
     // Get camera direction
     const cameraDirection = new THREE.Vector3();
@@ -323,11 +397,16 @@ function animate() {
         for (let j = enemies.length - 1; j >= 0; j--) {
             const enemy = enemies[j];
             if (projectile.position.distanceTo(enemy.position) < 2) {
+                // Create explosion at enemy position
+                const explosion = createExplosion(enemy.position);
+                explosions.push(explosion);
+                
                 scene.remove(enemy);
                 enemies.splice(j, 1);
                 scene.remove(projectile);
                 projectiles.splice(i, 1);
                 score += 100;
+                updateScore();
                 break;
             }
         }
@@ -354,4 +433,5 @@ window.addEventListener('resize', () => {
 });
 
 // Start game
+updateScore();
 animate(); 
