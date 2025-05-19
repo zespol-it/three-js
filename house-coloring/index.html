@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D House Coloring</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+        #color-picker {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+        }
+        #color-picker input {
+            margin: 5px;
+        }
+        .section {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+        h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div id="color-picker">
+        <div class="section">
+            <h3>House Colors</h3>
+            <div>
+                <label>Walls: <input type="color" id="walls-color" value="#E0E0E0"></label>
+            </div>
+            <div>
+                <label>Roof: <input type="color" id="roof-color" value="#8B4513"></label>
+            </div>
+            <div>
+                <label>Door: <input type="color" id="door-color" value="#4A4A4A"></label>
+            </div>
+            <div>
+                <label>Windows: <input type="color" id="windows-color" value="#87CEEB"></label>
+            </div>
+            <div>
+                <label>Chimney: <input type="color" id="chimney-color" value="#A52A2A"></label>
+            </div>
+        </div>
+    </div>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.162.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.162.0/examples/jsm/"
+            }
+        }
+    </script>
+    <script type="module" src="main.js"></script>
+</body>
+</html> 
