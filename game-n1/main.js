@@ -708,4 +708,4 @@ window.addEventListener('resize', () => {
 });
 
 // Start game
-animate(); 
+animate();
